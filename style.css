@@ -1,0 +1,101 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+main {
+  padding: 0 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+h1,
+h3 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.card {
+  border: 0px solid black;
+  border-radius: 15px;
+  padding: 15px;
+  box-shadow: 2px 4px 8px 1px rgba(0, 0, 0, 0.3);
+}
+
+.toChange {
+  margin-bottom: 10px;
+  font-size: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.toUnselect {
+  display: none;
+}
+
+.optbox {
+  border-width: 2px;
+  border-style: solid;
+  border-color: black;
+  border-radius: 10px;
+  margin-bottom: 5px;
+  width: 100%;
+  max-width: 700px;
+  min-height: 44px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ghostwhite;
+}
+
+.optbox input {
+  display: none;
+}
+
+.hidePrevious {
+  display: none;
+}
+
+#starter,
+#next,
+#remover,
+#prev {
+  cursor: pointer;
+  border: 0 solid black;
+  width: 200px;
+  height: 50px;
+  background-color: ghostwhite;
+  border-radius: 15px;
+  margin-right: 5px;
+}
+
+.optbox:has(input:checked) {
+  background-color: greenyellow;
+}
+
+@media (hover: hover) {
+  .optbox:hover {
+    background-color: rgb(0, 245, 0);
+    transition: 0.2s ease-in;
+  }
+  #starter:hover,
+  #next:hover,
+  #prev:hover {
+    background-color: rgb(0, 94, 255);
+    transition: 0.15s ease-in-out;
+  }
+  #remover:hover {
+    background-color: rgb(255, 34, 34);
+    transition: 0.15s ease-in-out;
+  }
+}
