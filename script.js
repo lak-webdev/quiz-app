@@ -104,7 +104,6 @@ let data;
 async function fetchGenres() {
     const response = await fetch("https://opentdb.com/api_category.php");
     data = await response.json();
-    console.log(data);
 }
 fetchGenres();
 
@@ -143,8 +142,6 @@ opt.addEventListener("click", async (e) => {
     qid = e.target.id;
     const catId=parseInt(qid);
     await fetchQuestions(catId);
-    console.log("Printing the questions: ");
-    console.log(quesFetched.results);
     for(let x=0 ; x < quesArr.length ; x++) {
         quesArr[x].questionText=`Q${x+1}: `+decodeURIComponent(quesFetched.results[x].question);
         for(let y=0 ; y < 3 ; y++) {
@@ -154,7 +151,6 @@ opt.addEventListener("click", async (e) => {
         shuffle(quesArr[x].options);
         quesArr[x].correctIndex=quesArr[x].options.indexOf(decodeURIComponent(quesFetched.results[x].correct_answer));
     }
-    console.log(quesArr.map(q => q.correctIndex));
     qline.innerHTML = quesArr[i].questionText;
     opt.innerHTML = `<label class="optbox"><input type="radio" name="ansToQ" id="0">${quesArr[i].options[0]}</label><label class="optbox"><input type="radio" name="ansToQ" id="1">${quesArr[i].options[1]}</label><label class="optbox"><input type="radio" name="ansToQ" id="2">${quesArr[i].options[2]}</label><label class="optbox"><input type="radio" name="ansToQ" id="3">${quesArr[i].options[3]}</label><label><button id="prev" class="hidePrevious">Previous</button></label><label><button id="next">Next</button></label><label><button id="remover" class="toUnselect">Remove selection</button></label>`;
 })
