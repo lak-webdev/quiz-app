@@ -26,6 +26,8 @@ h3 {
   border-radius: 15px;
   padding: 15px;
   box-shadow: 2px 4px 8px 1px rgba(0, 0, 0, 0.3);
+  max-width: 700px;
+  width: 100%;
 }
 
 .toChange {
@@ -35,12 +37,19 @@ h3 {
   justify-content: center;
   align-items: center;
   text-align: center;
+  min-height: 90px;
 }
 
 .toUnselect {
   display: none;
 }
 
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
 .optbox {
   border-width: 2px;
   border-style: solid;
@@ -62,6 +71,21 @@ h3 {
   display: none;
 }
 
+.genreSelector{
+  width:100px;
+  height:30px;
+  font-size: 10px;
+  border-radius: 8px;
+  cursor:pointer;
+  background-color: ghostwhite;
+  border-width: 0;
+  font-weight: bold;
+}
+
+.genreSelector:hover{
+  transition: 0.15s ease-in-out;
+  transform: scale(1.05);
+}
 .hidePrevious {
   display: none;
 }

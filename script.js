@@ -99,16 +99,70 @@ function showPreviousButton() {
     document.getElementById("prev").classList.remove("hidePrevious");
 }
 let i = 0;
+
+let data;
+async function fetchGenres() {
+    const response = await fetch("https://opentdb.com/api_category.php");
+    data = await response.json();
+    console.log(data);
+}
+fetchGenres();
+
+let selectedGenre,qid;
 startbtn.addEventListener("click", () => {
+    if (!data) return;
     textToDisappear.style.display = "none";
-    qline.innerHTML = quesArr[i].questionText;
-    opt.innerHTML = '<label class="optbox"><input type="radio" name="ansToQ" id="0">Orange</label><label class="optbox"><input type="radio" name="ansToQ" id="1">Yellow</label><label class="optbox"><input type="radio" name="ansToQ" id="2">Green</label><label class="optbox"><input type="radio" name="ansToQ" id="3">None of the above</label><label><button id="prev" class="hidePrevious">Previous</button></label><label><button id="next">Next</button></label><label><button id="remover" class="toUnselect">Remove selection</button></label>';
+    qline.innerHTML = "Please select your genre: ";
+    opt.innerHTML = `<label><button class='genreSelector' id = '${data.trivia_categories[0].id}Question'>${data.trivia_categories[0].name}</button>`;
+    for (let x = 1; x <= 17; x++) {
+        let name = data.trivia_categories[x].name;
+        if (name.includes("Video Games") || name.includes("Cartoon")) {
+            continue;
+        }
+        opt.innerHTML += `<label><button class='genreSelector' id = '${data.trivia_categories[x].id}Question'>${data.trivia_categories[x].name}</button>`;
+    }
 });
+
+let quesFetched;
+async function fetchQuestions(catId) {
+    const response = await fetch(`https://opentdb.com/api.php?amount=10&category=${catId}&type=multiple&encode=url3986`);
+    quesFetched=await response.json();
+}
+
+function shuffle(arr) {
+    for (let a = arr.length - 1; a > 0; a--) {
+        const b = Math.floor(Math.random() * (a + 1));
+        [arr[a], arr[b]] = [arr[b], arr[a]];
+    }
+    return arr;
+}
+
+opt.addEventListener("click", async (e) => {
+    if (e.target.matches(".genreSelector") == false) return;
+    selectedGenre = e.target.innerHTML;
+    qid = e.target.id;
+    const catId=parseInt(qid);
+    await fetchQuestions(catId);
+    console.log("Printing the questions: ");
+    console.log(quesFetched.results);
+    for(let x=0 ; x < quesArr.length ; x++) {
+        quesArr[x].questionText=`Q${x+1}: `+decodeURIComponent(quesFetched.results[x].question);
+        for(let y=0 ; y < 3 ; y++) {
+            quesArr[x].options[y]=decodeURIComponent(quesFetched.results[x].incorrect_answers[y]);
+        }
+        quesArr[x].options[3]=decodeURIComponent(quesFetched.results[x].correct_answer);
+        shuffle(quesArr[x].options);
+        quesArr[x].correctIndex=quesArr[x].options.indexOf(decodeURIComponent(quesFetched.results[x].correct_answer));
+    }
+    console.log(quesArr.map(q => q.correctIndex));
+    qline.innerHTML = quesArr[i].questionText;
+    opt.innerHTML = `<label class="optbox"><input type="radio" name="ansToQ" id="0">${quesArr[i].options[0]}</label><label class="optbox"><input type="radio" name="ansToQ" id="1">${quesArr[i].options[1]}</label><label class="optbox"><input type="radio" name="ansToQ" id="2">${quesArr[i].options[2]}</label><label class="optbox"><input type="radio" name="ansToQ" id="3">${quesArr[i].options[3]}</label><label><button id="prev" class="hidePrevious">Previous</button></label><label><button id="next">Next</button></label><label><button id="remover" class="toUnselect">Remove selection</button></label>`;
+})
 
 opt.addEventListener("change", (e) => {
     if (e.target.matches('input[name="ansToQ"]'))
         document.getElementById("remover").classList.remove("toUnselect");
-
+    
     let selected = Number(e.target.id);
     let entry = {
         id: quesArr[i].id,
@@ -178,14 +232,14 @@ function navigate(e) {
         else if (i == quesArr.length - 1) {
             let ask = confirm("Do you want to submit the quiz?");
             if (ask) {
-                let correctAnswers=0;
-                for(let j = 0 ; j < userAns.length ; j++) {
+                let correctAnswers = 0;
+                for (let j = 0; j < userAns.length; j++) {
                     if (userAns[j].isCorrect) {
                         correctAnswers++;
                     }
                 }
-                let msg=messages[correctAnswers];
-                document.getElementsByClassName("card")[0].innerHTML = `<h1>Your performance</h1><h2>You scored ${correctAnswers}/10</h2><h2>Your total percentage is ${correctAnswers*10}%</h2><h2>${msg}</h2>`;
+                let msg = messages[correctAnswers];
+                document.getElementsByClassName("card")[0].innerHTML = `<h1>Your performance</h1><h2>You scored ${correctAnswers}/10</h2><h2>Your total percentage is ${correctAnswers * 10}%</h2><h2>${msg}</h2>`;
             }
         }
         UnselectOptionButton(e);
